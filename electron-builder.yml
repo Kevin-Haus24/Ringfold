@@ -28,6 +28,11 @@ portable:
   artifactName: ${productName}-${version}-portable.${ext}
 mac:
   category: public.app-category.utilities
+  # No Apple Developer ID yet: ad-hoc sign so Apple Silicon accepts the bundle
+  # (unsigned apps are reported as "damaged"). Hardened runtime would reject
+  # Electron's pre-signed frameworks under an ad-hoc identity.
+  identity: '-'
+  hardenedRuntime: false
   target:
     - target: dmg
   artifactName: ${productName}-${version}-mac-${arch}.${ext}

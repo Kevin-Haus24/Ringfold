@@ -1,7 +1,7 @@
 {
   "name": "ringfold",
   "productName": "Ringfold",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Beautiful, fast disk space analyzer for Windows, macOS & Linux: sunburst chart, file types, largest files and duplicate finder, powered by a parallel Rust scanner.",
   "license": "MIT",
   "author": "Ringfold contributors",

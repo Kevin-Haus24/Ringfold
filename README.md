@@ -37,7 +37,14 @@ Grab an installer for your platform from the [Releases](../../releases) page:
 | macOS (Apple Silicon / Intel) | `Ringfold-x.y.z-mac-arm64.dmg` / `-mac-x64.dmg` |
 | Linux | `.AppImage` or `.deb` |
 
-> Builds are not code-signed yet. On macOS, right-click the app → **Open** the first time; on Windows, SmartScreen may ask you to confirm.
+> **Builds are not code-signed by Apple or Microsoft yet**, so the system asks for confirmation the first time:
+>
+> - **Windows:** SmartScreen says *“Windows protected your PC”* → **More info** → **Run anyway**.
+> - **macOS:** open Ringfold once (it will be blocked), then go to **System Settings → Privacy & Security**, scroll down and click **Open Anyway**.
+>   If macOS says the app *“is damaged”* (version 0.1.0), run this once in Terminal and open it again:
+>   ```bash
+>   xattr -cr /Applications/Ringfold.app
+>   ```
 
 ## Build from source
 
