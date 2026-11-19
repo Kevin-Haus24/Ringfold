@@ -61,13 +61,48 @@ Other scripts:
 
 ## How it works
 
-```
-┌────────────── Electron ──────────────┐        ┌──── ringfold-engine (Rust) ────┐
-│ renderer (React UI)                  │        │ parallel walker (rayon)          │
-│   ⇅ contextBridge (preload)          │  JSON  │ in-memory tree (flat arena)      │
-│ main process ── stdin/stdout lines ──┼───────▶│ queries: view, tree, top, types  │
-│   trash / reveal / dialogs           │◀───────┤ duplicate finder (xxh3)          │
-└──────────────────────────────────────┘        └──────────────────────────────────┘
+```mermaid
+flowchart LR
+    user(["👤 User"])
+
+    subgraph app["Electron app"]
+        ui["🎨 Renderer<br/><small>React UI · sunburst · lists</small>"]
+        bridge["🔒 Preload<br/><small>contextBridge API</small>"]
+        main["⚙️ Main process<br/><small>engine client · dialogs · IPC</small>"]
+        ui <-->|"typed calls"| bridge
+        bridge <-->|"IPC"| main
+    end
+
+    subgraph engine["ringfold-engine · Rust"]
+        walker["🚀 Parallel walker<br/><small>rayon</small>"]
+        tree[("🌳 In-memory tree<br/><small>flat arena</small>")]
+        queries["🔎 Queries<br/><small>view · tree · top · types</small>"]
+        dupes["🧬 Duplicate finder<br/><small>size → xxh3 head → full</small>"]
+        walker --> tree
+        tree --> queries
+        tree --> dupes
+    end
+
+    subgraph os["Operating system"]
+        fs[("💽 File system")]
+        trash["🗑️ Trash · Explorer / Finder"]
+    end
+
+    user --> ui
+    main <-->|"JSON lines<br/>stdin / stdout"| engine
+    walker -.->|"read dirs"| fs
+    dupes -.->|"read files"| fs
+    main -->|"confirm, then trash"| trash
+
+    classDef appC fill:#eef0ff,stroke:#7c8cff,color:#1b1f3a
+    classDef engC fill:#e6faf7,stroke:#4fd1c5,color:#123a36
+    classDef osC fill:#fff0f3,stroke:#ff6b8b,color:#3a1420
+    class ui,bridge,main appC
+    class walker,tree,queries,dupes engC
+    class fs,trash osC
+    style app fill:#f7f8ff,stroke:#7c8cff,color:#1b1f3a
+    style engine fill:#f2fdfb,stroke:#4fd1c5,color:#123a36
+    style os fill:#fff7f9,stroke:#ff6b8b,color:#3a1420
 ```
 
 - The engine keeps the scanned tree in memory and answers small queries, so the UI never has to receive millions of entries.

@@ -61,6 +61,50 @@ npm run dev        # соберёт движок и запустит прило�
 
 ## Как это устроено
 
+```mermaid
+flowchart LR
+    user(["👤 Пользователь"])
+
+    subgraph app["Приложение Electron"]
+        ui["🎨 Renderer<br/><small>интерфейс на React · диаграмма · списки</small>"]
+        bridge["🔒 Preload<br/><small>безопасный мост contextBridge</small>"]
+        main["⚙️ Main-процесс<br/><small>клиент движка · диалоги · IPC</small>"]
+        ui <-->|"типизированные вызовы"| bridge
+        bridge <-->|"IPC"| main
+    end
+
+    subgraph engine["ringfold-engine · Rust"]
+        walker["🚀 Параллельный обход<br/><small>rayon</small>"]
+        tree[("🌳 Дерево в памяти<br/><small>плоский массив</small>")]
+        queries["🔎 Запросы<br/><small>view · tree · top · types</small>"]
+        dupes["🧬 Поиск дубликатов<br/><small>размер → xxh3 начала → весь файл</small>"]
+        walker --> tree
+        tree --> queries
+        tree --> dupes
+    end
+
+    subgraph os["Операционная система"]
+        fs[("💽 Файловая система")]
+        trash["🗑️ Корзина · Проводник / Finder"]
+    end
+
+    user --> ui
+    main <-->|"JSON-строки<br/>stdin / stdout"| engine
+    walker -.->|"чтение папок"| fs
+    dupes -.->|"чтение файлов"| fs
+    main -->|"подтверждение → в корзину"| trash
+
+    classDef appC fill:#eef0ff,stroke:#7c8cff,color:#1b1f3a
+    classDef engC fill:#e6faf7,stroke:#4fd1c5,color:#123a36
+    classDef osC fill:#fff0f3,stroke:#ff6b8b,color:#3a1420
+    class ui,bridge,main appC
+    class walker,tree,queries,dupes engC
+    class fs,trash osC
+    style app fill:#f7f8ff,stroke:#7c8cff,color:#1b1f3a
+    style engine fill:#f2fdfb,stroke:#4fd1c5,color:#123a36
+    style os fill:#fff7f9,stroke:#ff6b8b,color:#3a1420
+```
+
 - Electron-приложение (React) общается с движком `ringfold-engine` на Rust через stdin/stdout, по одной JSON-строке на сообщение.
 - Движок хранит дерево в памяти и отвечает на небольшие запросы, поэтому интерфейс не получает миллионы записей разом.
 - Renderer изолирован (sandbox + contextIsolation); удаление идёт только через main-процесс, системную корзину и нативный диалог подтверждения.
