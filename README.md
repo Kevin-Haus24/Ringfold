@@ -85,6 +85,10 @@ scripts/           Build helpers
 docs/              Architecture diagram (regenerate: npm run docs:diagrams)
 ```
 
+## Privacy
+
+Ringfold works entirely offline. This program will not transfer any information to other networked systems unless specifically requested by the user or the person installing or operating it. There is no telemetry, no analytics and no update pings — scans stay on your computer.
+
 ## Contributing
 
 Issues and pull requests are welcome — see [CONTRIBUTING.md](CONTRIBUTING.md).
