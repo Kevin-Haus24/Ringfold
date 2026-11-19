@@ -1,0 +1,41 @@
+appId: io.github.kevin-haus24.ringfold
+productName: Ringfold
+copyright: Copyright © 2026 Ringfold contributors
+directories:
+  output: dist
+  buildResources: build
+files:
+  - out/**/*
+  - package.json
+  - '!**/*.map'
+extraResources:
+  - from: resources/engine
+    to: engine
+    filter:
+      - ringfold-engine*
+asar: true
+win:
+  target:
+    - target: nsis
+      arch: [x64]
+    - target: portable
+      arch: [x64]
+nsis:
+  oneClick: false
+  allowToChangeInstallationDirectory: true
+  artifactName: ${productName}-${version}-setup.${ext}
+portable:
+  artifactName: ${productName}-${version}-portable.${ext}
+mac:
+  category: public.app-category.utilities
+  target:
+    - target: dmg
+  artifactName: ${productName}-${version}-mac-${arch}.${ext}
+linux:
+  category: Utility
+  maintainer: Ringfold contributors
+  synopsis: Disk space analyzer
+  target:
+    - AppImage
+    - deb
+  artifactName: ${productName}-${version}-linux-${arch}.${ext}

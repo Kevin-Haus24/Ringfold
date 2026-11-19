@@ -1,0 +1,54 @@
+{
+  "name": "ringfold",
+  "productName": "Ringfold",
+  "version": "0.1.0",
+  "description": "Beautiful, fast disk space analyzer for Windows, macOS & Linux: sunburst chart, file types, largest files and duplicate finder, powered by a parallel Rust scanner.",
+  "license": "MIT",
+  "author": "Ringfold contributors",
+  "homepage": "https://github.com/Kevin-Haus24/Ringfold",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Kevin-Haus24/Ringfold.git"
+  },
+  "keywords": [
+    "disk-usage",
+    "disk-space",
+    "disk-analyzer",
+    "storage-analyzer",
+    "sunburst",
+    "duplicate-finder",
+    "electron",
+    "react",
+    "rust",
+    "cross-platform"
+  ],
+  "main": "./out/main/index.js",
+  "scripts": {
+    "engine:build": "node scripts/build-engine.mjs",
+    "engine:test": "cargo test --manifest-path engine/Cargo.toml",
+    "dev": "npm run engine:build && electron-vite dev",
+    "start": "electron-vite preview",
+    "build": "npm run engine:build && electron-vite build",
+    "typecheck": "tsc --noEmit -p tsconfig.node.json && tsc --noEmit -p tsconfig.web.json",
+    "dist": "npm run build && electron-builder --publish never",
+    "dist:win": "npm run build && electron-builder --win --publish never",
+    "dist:mac": "npm run build && electron-builder --mac --publish never",
+    "dist:linux": "npm run build && electron-builder --linux --publish never"
+  },
+  "devDependencies": {
+    "@types/node": "^24.19.2",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@vitejs/plugin-react": "^6.3.0",
+    "electron": "^45.4.1",
+    "electron-builder": "^26.18.0",
+    "electron-vite": "^6.0.0",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1",
+    "typescript": "^7.0.2",
+    "vite": "^8.3.8"
+  },
+  "bugs": {
+    "url": "https://github.com/Kevin-Haus24/Ringfold/issues"
+  }
+}
