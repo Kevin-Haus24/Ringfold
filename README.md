@@ -61,49 +61,12 @@ Other scripts:
 
 ## How it works
 
-```mermaid
-flowchart LR
-    user(["👤 User"])
-
-    subgraph app["Electron app"]
-        ui["🎨 Renderer<br/><small>React UI · sunburst · lists</small>"]
-        bridge["🔒 Preload<br/><small>contextBridge API</small>"]
-        main["⚙️ Main process<br/><small>engine client · dialogs · IPC</small>"]
-        ui <-->|"typed calls"| bridge
-        bridge <-->|"IPC"| main
-    end
-
-    subgraph engine["ringfold-engine · Rust"]
-        walker["🚀 Parallel walker<br/><small>rayon</small>"]
-        tree[("🌳 In-memory tree<br/><small>flat arena</small>")]
-        queries["🔎 Queries<br/><small>view · tree · top · types</small>"]
-        dupes["🧬 Duplicate finder<br/><small>size → xxh3 head → full</small>"]
-        walker --> tree
-        tree --> queries
-        tree --> dupes
-    end
-
-    subgraph os["Operating system"]
-        fs[("💽 File system")]
-        trash["🗑️ Trash · Explorer / Finder"]
-    end
-
-    user --> ui
-    main <-->|"JSON lines<br/>stdin / stdout"| engine
-    walker -.->|"read dirs"| fs
-    dupes -.->|"read files"| fs
-    main -->|"confirm, then trash"| trash
-
-    classDef appC fill:#eef0ff,stroke:#7c8cff,color:#1b1f3a
-    classDef engC fill:#e6faf7,stroke:#4fd1c5,color:#123a36
-    classDef osC fill:#fff0f3,stroke:#ff6b8b,color:#3a1420
-    class ui,bridge,main appC
-    class walker,tree,queries,dupes engC
-    class fs,trash osC
-    style app fill:#f7f8ff,stroke:#7c8cff,color:#1b1f3a
-    style engine fill:#f2fdfb,stroke:#4fd1c5,color:#123a36
-    style os fill:#fff7f9,stroke:#ff6b8b,color:#3a1420
-```
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/architecture-en-dark.svg">
+    <img src="docs/architecture-en-light.svg" alt="Ringfold architecture: Electron app, Rust engine, operating system" width="100%">
+  </picture>
+</p>
 
 - The engine keeps the scanned tree in memory and answers small queries, so the UI never has to receive millions of entries.
 - The renderer is sandboxed with context isolation; deletion goes only through the main process, the system trash and a native confirmation dialog.
@@ -119,6 +82,7 @@ src/preload/       contextBridge API
 src/renderer/      React UI (components/, lib/, i18n.tsx, styles.css)
 src/shared/        Types and helpers shared by both sides
 scripts/           Build helpers
+docs/              Architecture diagram (regenerate: npm run docs:diagrams)
 ```
 
 ## Contributing
